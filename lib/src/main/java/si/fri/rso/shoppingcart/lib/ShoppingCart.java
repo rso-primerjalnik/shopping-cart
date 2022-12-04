@@ -1,79 +1,25 @@
 package si.fri.rso.shoppingcart.lib;
 
-import java.time.Instant;
+import java.util.List;
 
 public class ShoppingCart {
 
-    private Integer imageId;
-    private String title;
-    private String description;
-    private Integer width;
-    private Integer height;
-    private Instant created;
-    private String uri;
-    private Integer numberOfComments;
+    private Integer cartId;
+    private List<ShoppingCartProduct> products;
 
-    public String getTitle() {
-        return title;
+    public Integer getCartId() {
+        return this.cartId;
     }
 
-    public void setTitle(String title) {
-        this.title = title;
+    public void setCartId(Integer id) {
+        this.cartId = id;
     }
 
-    public String getDescription() {
-        return description;
+    public List<ShoppingCartProduct> getProducts() {
+        return this.products;
     }
 
-    public void setDescription(String description) {
-        this.description = description;
-    }
-
-    public Integer getWidth() {
-        return width;
-    }
-
-    public void setWidth(Integer width) {
-        this.width = width;
-    }
-
-    public Integer getHeight() {
-        return height;
-    }
-
-    public void setHeight(Integer height) {
-        this.height = height;
-    }
-
-    public Instant getCreated() {
-        return created;
-    }
-
-    public void setCreated(Instant created) {
-        this.created = created;
-    }
-
-    public String getUri() {
-        return uri;
-    }
-
-    public void setUri(String uri) {
-        this.uri = uri;
-    }
-
-    public Integer getImageId() {
-        return imageId;
-    }
-
-    public void setImageId(Integer imageId) {
-        this.imageId = imageId;
-    }
-
-    public Integer getNumberOfComments() {
-        return numberOfComments;
-    }
-
-    public void setNumberOfComments(Integer numberOfComments) {
-        this.numberOfComments = numberOfComments;
+    public void setProducts(List<ShoppingCartProduct> products) {
+        this.products = products;
     }
 }
