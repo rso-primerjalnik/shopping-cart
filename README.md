@@ -1,1 +1,1 @@
-# kosarica
+# Shopping cart microservice
