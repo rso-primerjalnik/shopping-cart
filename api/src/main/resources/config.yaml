@@ -1,5 +1,5 @@
 kumuluzee:
-  name: cart-service
+  name: shopping-cart-service
   env:
     name: dev
   version: 1.0.0
@@ -8,8 +8,8 @@ kumuluzee:
     http:
       port: 8080
   datasources:
-    - jndi-name: jdbc/ImageMetadataDS
-      connection-url: jdbc:postgresql://localhost:5432/image-metadata
+    - jndi-name: jdbc/ShoppingCartDS
+      connection-url: jdbc:postgresql://localhost:5432/shopping-cart
       username: dbuser
       password: postgres
       max-pool-size: 20
