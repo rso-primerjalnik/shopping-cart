@@ -5,13 +5,9 @@ import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import javax.persistence.TypedQuery;
 import javax.ws.rs.NotFoundException;
-import javax.ws.rs.core.UriInfo;
 import java.util.List;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
-
-import com.kumuluz.ee.rest.beans.QueryParameters;
-import com.kumuluz.ee.rest.utils.JPAUtils;
 
 import si.fri.rso.shoppingcart.lib.ShoppingCart;
 import si.fri.rso.shoppingcart.models.converters.ShoppingCartConverter;
@@ -26,60 +22,50 @@ public class ShoppingCartBean {
     @Inject
     private EntityManager em;
 
-    public List<ShoppingCart> getImageMetadata() {
+    public List<ShoppingCart> getShoppingCarts() {
 
         TypedQuery<ShoppingCartEntity> query = em.createNamedQuery(
-                "ImageMetadataEntity.getAll", ShoppingCartEntity.class);
+                "ShoppingCartEntity.getAll", ShoppingCartEntity.class);
 
         List<ShoppingCartEntity> resultList = query.getResultList();
 
         return resultList.stream().map(ShoppingCartConverter::toDto).collect(Collectors.toList());
-
     }
 
-    public List<ShoppingCart> getImageMetadataFilter(UriInfo uriInfo) {
+    public ShoppingCart getShoppingCartById(Integer id) {
 
-        QueryParameters queryParameters = QueryParameters.query(uriInfo.getRequestUri().getQuery()).defaultOffset(0)
-                .build();
+        ShoppingCartEntity shoppingCartEntity = em.find(ShoppingCartEntity.class, id);
 
-        return JPAUtils.queryEntities(em, ShoppingCartEntity.class, queryParameters).stream()
-                .map(ShoppingCartConverter::toDto).collect(Collectors.toList());
-    }
-
-    public ShoppingCart getImageMetadata(Integer id) {
-
-        ShoppingCartEntity imageMetadataEntity = em.find(ShoppingCartEntity.class, id);
-
-        if (imageMetadataEntity == null) {
+        if (shoppingCartEntity == null) {
             throw new NotFoundException();
         }
 
-        ShoppingCart imageMetadata = ShoppingCartConverter.toDto(imageMetadataEntity);
+        ShoppingCart shoppingCart = ShoppingCartConverter.toDto(shoppingCartEntity);
 
-        return imageMetadata;
+        return shoppingCart;
     }
 
-    public ShoppingCart createImageMetadata(ShoppingCart imageMetadata) {
+    public ShoppingCart createShoppingCart(ShoppingCart shoppingCart) {
 
-        ShoppingCartEntity imageMetadataEntity = ShoppingCartConverter.toEntity(imageMetadata);
+        ShoppingCartEntity shoppingCartEntity = ShoppingCartConverter.toEntity(shoppingCart);
 
         try {
             beginTx();
-            em.persist(imageMetadataEntity);
+            em.persist(shoppingCartEntity);
             commitTx();
         }
         catch (Exception e) {
             rollbackTx();
         }
 
-        if (imageMetadataEntity.getId() == null) {
+        if (shoppingCartEntity.getId() == null) {
             throw new RuntimeException("Entity was not persisted");
         }
 
-        return ShoppingCartConverter.toDto(imageMetadataEntity);
+        return ShoppingCartConverter.toDto(shoppingCartEntity);
     }
 
-    public ShoppingCart putImageMetadata(Integer id, ShoppingCart imageMetadata) {
+    public ShoppingCart putShoppingCart(Integer id, ShoppingCart shoppingCart) {
 
         ShoppingCartEntity c = em.find(ShoppingCartEntity.class, id);
 
@@ -87,29 +73,29 @@ public class ShoppingCartBean {
             return null;
         }
 
-        ShoppingCartEntity updatedImageMetadataEntity = ShoppingCartConverter.toEntity(imageMetadata);
+        ShoppingCartEntity updatedShoppingCartEntity = ShoppingCartConverter.toEntity(shoppingCart);
 
         try {
             beginTx();
-            updatedImageMetadataEntity.setId(c.getId());
-            updatedImageMetadataEntity = em.merge(updatedImageMetadataEntity);
+            updatedShoppingCartEntity.setId(c.getId());
+            updatedShoppingCartEntity = em.merge(updatedShoppingCartEntity);
             commitTx();
         }
         catch (Exception e) {
             rollbackTx();
         }
 
-        return ShoppingCartConverter.toDto(updatedImageMetadataEntity);
+        return ShoppingCartConverter.toDto(updatedShoppingCartEntity);
     }
 
-    public boolean deleteImageMetadata(Integer id) {
+    public boolean deleteShoppingCart(Integer id) {
 
-        ShoppingCartEntity imageMetadata = em.find(ShoppingCartEntity.class, id);
+        ShoppingCartEntity shoppingCart = em.find(ShoppingCartEntity.class, id);
 
-        if (imageMetadata != null) {
+        if (shoppingCart != null) {
             try {
                 beginTx();
-                em.remove(imageMetadata);
+                em.remove(shoppingCart);
                 commitTx();
             }
             catch (Exception e) {
