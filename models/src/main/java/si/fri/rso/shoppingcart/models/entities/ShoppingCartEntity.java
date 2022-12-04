@@ -1,92 +1,35 @@
 package si.fri.rso.shoppingcart.models.entities;
 
 import javax.persistence.*;
-import java.time.Instant;
+import java.util.List;
 
 @Entity
-@Table(name = "image_metadata")
-@NamedQueries(value =
-        {
-                @NamedQuery(name = "ImageMetadataEntity.getAll",
-                        query = "SELECT im FROM ShoppingCartEntity im")
-        })
+@Table(name = "shopping_cart")
+@NamedQueries(value = {@NamedQuery(name = "ShoppingCartEntity.getAll", query = "SELECT carts FROM ShoppingCartEntity carts")})
+
 public class ShoppingCartEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    @Column(name = "title")
-    private String title;
-
-    @Column(name = "description")
-    private String description;
-
-    @Column(name = "width")
-    private Integer width;
-
-    @Column(name = "height")
-    private Integer height;
-
-    @Column(name = "created")
-    private Instant created;
-
-    @Column(name = "uri")
-    private String uri;
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
+    @JoinColumn(name = "cart_id")
+    private List<ShoppingCartProductEntity> products;
 
     public Integer getId() {
-        return id;
+        return this.id;
     }
 
     public void setId(Integer id) {
         this.id = id;
     }
 
-    public String getTitle() {
-        return title;
+    public List<ShoppingCartProductEntity> getProducts() {
+        return this.products;
     }
 
-    public void setTitle(String title) {
-        this.title = title;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
-    }
-
-    public Integer getWidth() {
-        return width;
-    }
-
-    public void setWidth(Integer width) {
-        this.width = width;
-    }
-
-    public Integer getHeight() {
-        return height;
-    }
-
-    public void setHeight(Integer height) {
-        this.height = height;
-    }
-
-    public Instant getCreated() {
-        return created;
-    }
-
-    public void setCreated(Instant created) {
-        this.created = created;
-    }
-
-    public String getUri() {
-        return uri;
-    }
-
-    public void setUri(String uri) {
-        this.uri = uri;
+    public void setProducts(List<ShoppingCartProductEntity> products) {
+        this.products = products;
     }
 }

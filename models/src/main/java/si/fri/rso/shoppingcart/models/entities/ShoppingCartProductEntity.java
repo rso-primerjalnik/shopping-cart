@@ -1,10 +1,23 @@
-package si.fri.rso.shoppingcart.lib;
+package si.fri.rso.shoppingcart.models.entities;
 
-public class ShoppingCartProduct {
+import javax.persistence.*;
 
+@Entity
+@Table(name = "shopping_cart_product", uniqueConstraints = {@UniqueConstraint(name = "UniqueProductInCart", columnNames = {"product_id", "cart_id"})})
+
+public class ShoppingCartProductEntity {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
+
+    @Column(name = "product_id")
     private Integer productId;
+
+    @Column(name = "cart_id")
     private Integer cartId;
+
+    @Column(name = "quantity")
     private Integer quantity;
 
     public Integer getId() {
