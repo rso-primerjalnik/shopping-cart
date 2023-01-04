@@ -13,7 +13,7 @@ spec:
         app: shopping-cart
     spec:
       containers:
-        - image: anzeo/shopping-cart:2022-12-04-21-42-12
+        - image: anzeo/shopping-cart:latest
           name: shopping-cart
           env:
             - name: KUMULUZEE_DATASOURCES0_CONNECTIONURL
@@ -38,10 +38,10 @@ kind: Service
 metadata:
   name: shopping-cart
 spec:
-  type: LoadBalancer
+  type: NodePort
   ports:
     - port: 8080
       protocol: TCP
-      targetPort: server
+      targetPort: 8080
   selector:
     app: shopping-cart
