@@ -111,7 +111,7 @@ public class ShoppingCartResource {
             )
     })
     @PUT
-    @Path("{shoppingCartId}")
+    @Path("/{shoppingCartId}")
     public Response putShoppingCart(@Parameter(description = "Shopping cart ID.", required = true)
                                      @PathParam("shoppingCartId") Integer shoppingCartId,
                                      @RequestBody(
@@ -142,7 +142,7 @@ public class ShoppingCartResource {
             )
     })
     @DELETE
-    @Path("{shoppingCartId}")
+    @Path("/{shoppingCartId}")
     public Response deleteShoppingCart(@Parameter(description = "Shopping cart ID.", required = true)
                                         @PathParam("shoppingCartId") Integer shoppingCartId) {
 
