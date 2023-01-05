@@ -12,7 +12,8 @@ kumuluzee:
       connection-url: jdbc:postgresql://localhost:5432/shopping-cart
       username: dbuser
       password: postgres
-      max-pool-size: 20
+      pool:
+        max-size: 1
   health:
     checks:
       data-source-health-check:
