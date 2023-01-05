@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
+import org.eclipse.microprofile.metrics.annotation.Timed;
 import si.fri.rso.shoppingcart.lib.ShoppingCart;
 import si.fri.rso.shoppingcart.models.converters.ShoppingCartConverter;
 import si.fri.rso.shoppingcart.models.entities.ShoppingCartEntity;
@@ -32,6 +33,7 @@ public class ShoppingCartBean {
         return resultList.stream().map(ShoppingCartConverter::toDto).collect(Collectors.toList());
     }
 
+    @Timed
     public ShoppingCart getShoppingCartById(Integer id) {
 
         ShoppingCartEntity shoppingCartEntity = em.find(ShoppingCartEntity.class, id);

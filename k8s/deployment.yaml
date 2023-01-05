@@ -27,9 +27,20 @@ spec:
                   key: KUMULUZEE_DATASOURCES0_PASSWORD
           ports:
             - containerPort: 8080
-              name: server
+              name: shopping-cart-port
               protocol: TCP
-          imagePullPolicy: IfNotPresent
+          livenessProbe:
+            httpGet:
+              path: /health/live
+              port: shopping-cart-port
+            initialDelaySeconds: 20
+            periodSeconds: 3
+          readinessProbe:
+            httpGet:
+              path: /health/ready
+              port: shopping-cart-port
+            initialDelaySeconds: 20
+            periodSeconds: 3
 
 ---
 
@@ -42,6 +53,6 @@ spec:
   ports:
     - port: 8080
       protocol: TCP
-      targetPort: 8080
+      targetPort: shopping-cart-port
   selector:
     app: shopping-cart
