@@ -25,6 +25,13 @@ spec:
                 name: aks-helloworld-two
                 port:
                   number: 80
+          - path: /shopping-cart(/|$)(.*)
+            pathType: Prefix
+            backend:
+              service:
+                name: shopping-cart
+                port:
+                  number: 8080
           - path: /(.*)
             pathType: Prefix
             backend:
@@ -32,3 +39,4 @@ spec:
                 name: aks-helloworld-one
                 port:
                   number: 80
+
