@@ -19,7 +19,7 @@ public class ShoppingCartProductConverter {
     public static ShoppingCartProductEntity toEntity(ShoppingCartProduct dto) {
 
         ShoppingCartProductEntity entity = new ShoppingCartProductEntity();
-        entity.setId(dto.getId());
+//        entity.setId(dto.getId());
         entity.setCartId(dto.getCartId());
         entity.setProductId(dto.getProductId());
         entity.setQuantity(dto.getQuantity());
