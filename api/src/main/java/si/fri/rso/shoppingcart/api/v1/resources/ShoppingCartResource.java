@@ -85,7 +85,7 @@ public class ShoppingCartResource {
             @APIResponse(responseCode = "201",
                     description = "Shopping cart successfully added."
             ),
-            @APIResponse(responseCode = "405", description = "Validation error.")
+            @APIResponse(responseCode = "405", description = "Validation error. Missing parameters.")
     })
     @POST
     public Response createShoppingCart(@RequestBody(
@@ -99,7 +99,7 @@ public class ShoppingCartResource {
             shoppingCart = shoppingCartBean.createShoppingCart(shoppingCart);
         }
 
-        return Response.status(Response.Status.CONFLICT).entity(shoppingCart).build();
+        return Response.status(Response.Status.CREATED).entity(shoppingCart).build();
     }
 
 
@@ -108,6 +108,10 @@ public class ShoppingCartResource {
             @APIResponse(
                     responseCode = "200",
                     description = "Shopping cart successfully updated."
+            ),
+            @APIResponse(
+                    responseCode = "404",
+                    description = "Shopping cart not found."
             )
     })
     @PUT
@@ -126,7 +130,7 @@ public class ShoppingCartResource {
             return Response.status(Response.Status.NOT_FOUND).build();
         }
 
-        return Response.status(Response.Status.NOT_MODIFIED).build();
+        return Response.status(Response.Status.OK).entity(shoppingCart).build();
     }
 
 
