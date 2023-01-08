@@ -12,6 +12,9 @@ public class RestProperties {
     @ConfigValue(watch = true)
     private Boolean maintenanceMode;
 
+    @ConfigValue(watch = true)
+    private String productCatalogBaseUrl;
+
     private Boolean broken;
 
     public Boolean getMaintenanceMode() {
@@ -20,6 +23,14 @@ public class RestProperties {
 
     public void setMaintenanceMode(final Boolean maintenanceMode) {
         this.maintenanceMode = maintenanceMode;
+    }
+
+    public String getProductCatalogBaseUrl() {
+        return this.productCatalogBaseUrl;
+    }
+
+    public void setProductCatalogBaseUrl(String productCatalogBaseUrl) {
+        this.productCatalogBaseUrl = productCatalogBaseUrl;
     }
 
     public Boolean getBroken() {

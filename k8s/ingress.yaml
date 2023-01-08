@@ -32,6 +32,13 @@ spec:
                 name: shopping-cart
                 port:
                   number: 8080
+          - path: /store-catalog(/|$)(.*)
+            pathType: Prefix
+            backend:
+              service:
+                name: store-catalog
+                port:
+                  number: 8080
           - path: /(.*)
             pathType: Prefix
             backend:
