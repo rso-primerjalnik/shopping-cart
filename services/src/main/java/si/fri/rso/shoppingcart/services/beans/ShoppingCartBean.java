@@ -5,14 +5,20 @@ import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import javax.persistence.TypedQuery;
 import javax.ws.rs.NotFoundException;
+import javax.ws.rs.client.ClientBuilder;
+import javax.ws.rs.core.GenericType;
+import java.util.HashMap;
 import java.util.List;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
 import org.eclipse.microprofile.metrics.annotation.Timed;
+import si.fri.rso.shoppingcart.lib.Product;
 import si.fri.rso.shoppingcart.lib.ShoppingCart;
+import si.fri.rso.shoppingcart.lib.ShoppingCartProduct;
 import si.fri.rso.shoppingcart.models.converters.ShoppingCartConverter;
 import si.fri.rso.shoppingcart.models.entities.ShoppingCartEntity;
+import si.fri.rso.shoppingcart.services.config.RestProperties;
 
 
 @RequestScoped
@@ -22,6 +28,9 @@ public class ShoppingCartBean {
 
     @Inject
     private EntityManager em;
+
+    @Inject
+    private RestProperties properties;
 
     public List<ShoppingCart> getShoppingCarts() {
 
@@ -109,6 +118,33 @@ public class ShoppingCartBean {
         }
 
         return true;
+    }
+
+    public ShoppingCart setAdditionalDataForCartProducts(ShoppingCart shoppingCart) {
+        String productCatalogBaseUrl = properties.getProductCatalogBaseUrl();
+
+        List<Product> products = ClientBuilder.newClient()
+                .target(productCatalogBaseUrl + "/v1/products/filter")
+                .queryParam("filter", "id:IN:" + shoppingCart.getProducts().stream().map(ShoppingCartProduct::getProductId).collect(Collectors.toList()))
+                .request()
+                .get(new GenericType<>() {
+                });
+
+        HashMap<Integer, Product> productsHash = new HashMap<>();
+        for (Product product : products) {
+            productsHash.put(product.getId(), product);
+        }
+
+        for (ShoppingCartProduct scProduct : shoppingCart.getProducts()) {
+            Product productData = productsHash.get(scProduct.getProductId());
+            if (productData != null) {
+                scProduct.setName(productData.getName());
+                scProduct.setDescription(productData.getDescription());
+                scProduct.setWeight(productData.getWeight());
+            }
+        }
+
+        return shoppingCart;
     }
 
     private void beginTx() {

@@ -77,7 +77,9 @@ public class ShoppingCartResource {
             return Response.status(Response.Status.NOT_FOUND).build();
         }
 
-        return Response.status(Response.Status.OK).entity(shoppingCart).build();
+        ShoppingCart newShoppingCart = shoppingCartBean.setAdditionalDataForCartProducts(shoppingCart);
+
+        return Response.status(Response.Status.OK).entity(newShoppingCart).build();
     }
 
     @Operation(description = "Add shopping cart.", summary = "Add shopping cart")

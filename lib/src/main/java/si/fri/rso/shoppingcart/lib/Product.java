@@ -1,45 +1,18 @@
 package si.fri.rso.shoppingcart.lib;
 
-public class ShoppingCartProduct {
+public class Product {
 
     private Integer id;
-    private Integer productId;
-    private Integer cartId;
-    private Integer quantity;
     private String name;
     private String description;
     private String weight;
 
     public Integer getId() {
-        return this.id;
+        return id;
     }
 
     public void setId(Integer id) {
         this.id = id;
-    }
-
-    public Integer getProductId() {
-        return this.productId;
-    }
-
-    public void setProductId(Integer id) {
-        this.productId = id;
-    }
-
-    public Integer getCartId() {
-        return this.cartId;
-    }
-
-    public void setCartId(Integer id) {
-        this.cartId = id;
-    }
-
-    public Integer getQuantity() {
-        return this.quantity;
-    }
-
-    public void setQuantity(Integer quantity) {
-        this.quantity = quantity;
     }
 
     public String getName() {
@@ -65,4 +38,5 @@ public class ShoppingCartProduct {
     public void setWeight(String weight) {
         this.weight = weight;
     }
+    
 }
