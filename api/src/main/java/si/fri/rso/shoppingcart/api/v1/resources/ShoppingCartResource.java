@@ -11,6 +11,7 @@ import org.eclipse.microprofile.openapi.annotations.parameters.RequestBody;
 import org.eclipse.microprofile.openapi.annotations.responses.APIResponse;
 import org.eclipse.microprofile.openapi.annotations.responses.APIResponses;
 import si.fri.rso.shoppingcart.lib.ShoppingCart;
+import si.fri.rso.shoppingcart.lib.ShoppingCartProduct;
 import si.fri.rso.shoppingcart.services.beans.ShoppingCartBean;
 
 import javax.enterprise.context.ApplicationScoped;
@@ -20,6 +21,7 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
 
@@ -51,7 +53,13 @@ public class ShoppingCartResource {
 
         List<ShoppingCart> shoppingCarts = shoppingCartBean.getShoppingCarts();
 
-        return Response.status(Response.Status.OK).entity(shoppingCarts).build();
+        List<ShoppingCart> newShoppingCarts = new ArrayList<>();
+
+        for (ShoppingCart sc : shoppingCarts) {
+            newShoppingCarts.add(shoppingCartBean.setAdditionalDataForCartProducts(sc));
+        }
+
+        return Response.status(Response.Status.OK).entity(newShoppingCarts).build();
     }
 
 
@@ -105,15 +113,19 @@ public class ShoppingCartResource {
     }
 
 
-    @Operation(description = "Update shopping cart data.", summary = "Update shoping cart")
+    @Operation(description = "Insert product to shopping cart.", summary = "Insert product to shoping cart")
     @APIResponses({
             @APIResponse(
                     responseCode = "200",
-                    description = "Shopping cart successfully updated."
+                    description = "Shopping cart items successfully changed."
+            ),
+            @APIResponse(
+                    responseCode = "400",
+                    description = "Bad request. Missing product data."
             ),
             @APIResponse(
                     responseCode = "404",
-                    description = "Shopping cart not found."
+                    description = "Shopping cart or product not found."
             )
     })
     @PUT
@@ -121,18 +133,32 @@ public class ShoppingCartResource {
     public Response putShoppingCart(@Parameter(description = "Shopping cart ID.", required = true)
                                      @PathParam("shoppingCartId") Integer shoppingCartId,
                                      @RequestBody(
-                                             description = "DTO object with shopping cart data.",
+                                             description = "DTO object with shopping cart product data.",
                                              required = true, content = @Content(
-                                             schema = @Schema(implementation = ShoppingCart.class)))
-                                             ShoppingCart shoppingCart) {
+                                             schema = @Schema(implementation = ShoppingCartProduct.class)))
+                                             ShoppingCartProduct scProduct) {
 
-        shoppingCart = shoppingCartBean.putShoppingCart(shoppingCartId, shoppingCart);
+        if (scProduct.getProductId() == null)
+            return Response.status(Response.Status.BAD_REQUEST).build();
 
-        if (shoppingCart == null) {
+        ShoppingCart updatedCart = null;
+        try {
+            updatedCart = shoppingCartBean.addProductToCart(shoppingCartId, scProduct);
+        }
+        catch (NotFoundException e) {
+            return Response.status(Response.Status.NOT_FOUND).build();
+        }
+        catch (IllegalArgumentException e) {
+            return Response.status(Response.Status.BAD_REQUEST).build();
+        }
+
+        if (updatedCart == null){
             return Response.status(Response.Status.NOT_FOUND).build();
         }
 
-        return Response.status(Response.Status.OK).entity(shoppingCart).build();
+        ShoppingCart newShoppingCart = shoppingCartBean.setAdditionalDataForCartProducts(updatedCart);
+
+        return Response.status(Response.Status.OK).entity(newShoppingCart).build();
     }
 
 

@@ -7,6 +7,7 @@ import javax.persistence.TypedQuery;
 import javax.ws.rs.NotFoundException;
 import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.core.GenericType;
+import javax.ws.rs.core.Response;
 import java.util.HashMap;
 import java.util.List;
 import java.util.logging.Logger;
@@ -18,6 +19,7 @@ import si.fri.rso.shoppingcart.lib.ShoppingCart;
 import si.fri.rso.shoppingcart.lib.ShoppingCartProduct;
 import si.fri.rso.shoppingcart.models.converters.ShoppingCartConverter;
 import si.fri.rso.shoppingcart.models.entities.ShoppingCartEntity;
+import si.fri.rso.shoppingcart.models.entities.ShoppingCartProductEntity;
 import si.fri.rso.shoppingcart.services.config.RestProperties;
 
 
@@ -97,6 +99,88 @@ public class ShoppingCartBean {
         }
 
         return ShoppingCartConverter.toDto(updatedShoppingCartEntity);
+    }
+
+    public ShoppingCart addProductToCart(Integer id, ShoppingCartProduct product) {
+
+        // Check if shopping cart exists
+        ShoppingCartEntity existingCart = em.find(ShoppingCartEntity.class, id);
+        if (existingCart == null)
+            return null;
+
+        // Check if product exists - calls product service
+        String productCatalogBaseUrl = properties.getProductCatalogBaseUrl();
+        if (productCatalogBaseUrl != null) {
+            String apiUrl = productCatalogBaseUrl + "/v1/products/" + product.getProductId();
+            Response response = ClientBuilder.newClient().target(apiUrl).request().get();
+
+            if (response.getStatus() != Response.Status.OK.getStatusCode()) {
+                throw new NotFoundException("Product with provided id was not found");
+            }
+        }
+
+        // Get product from cart if it was already inserted
+        ShoppingCartProductEntity existingProduct = null;
+        try {
+            existingProduct = em.createNamedQuery("ShoppingCartProductEntity.find", ShoppingCartProductEntity.class)
+                    .setParameter("cartId", id)
+                    .setParameter("productId", product.getProductId())
+                    .getSingleResult();
+        }catch (Exception e) {}
+
+        int quantity = 0;
+        if (product.getQuantity() != null) {
+            if (product.getQuantity() <= 0)
+                quantity = 0;
+            else
+                quantity = product.getQuantity();
+        }
+
+
+        if (existingProduct == null && quantity == 0) {
+            throw new IllegalArgumentException("Quantity can't be 0 for new product");
+        }
+
+        // Remove product from cart
+        if (existingProduct != null && quantity == 0) {
+            try {
+                beginTx();
+                existingCart.getProducts().remove(existingProduct);
+                em.remove(existingProduct);
+                em.persist(existingCart);
+                commitTx();
+            }
+            catch (Exception e) {
+                rollbackTx();
+            }
+            return ShoppingCartConverter.toDto(existingCart);
+        }
+
+        ShoppingCartProductEntity editableProduct = existingProduct;
+
+        if (existingProduct == null) {
+            editableProduct = new ShoppingCartProductEntity();
+            editableProduct.setCartId(product.getCartId());
+            editableProduct.setProductId(product.getProductId());
+
+            existingCart.getProducts().add(editableProduct);
+        }
+
+        // Change quantity for existing product, or set it for new one
+        editableProduct.setQuantity(product.getQuantity());
+
+        // Add new product with quantity, or just change existing one
+        try {
+            beginTx();
+            em.persist(editableProduct);
+            em.persist(existingCart);
+            commitTx();
+        }
+        catch (Exception e) {
+            rollbackTx();
+        }
+
+        return ShoppingCartConverter.toDto(existingCart);
     }
 
     public boolean deleteShoppingCart(Integer id) {

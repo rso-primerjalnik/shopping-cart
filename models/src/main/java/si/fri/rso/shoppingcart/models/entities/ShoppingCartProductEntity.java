@@ -5,6 +5,12 @@ import javax.persistence.*;
 @Entity
 @Table(name = "shopping_cart_product", uniqueConstraints = {@UniqueConstraint(name = "UniqueProductInCart", columnNames = {"product_id", "cart_id"})})
 
+@NamedQueries(
+        value = {@NamedQuery(
+                name = "ShoppingCartProductEntity.find",
+                query = "SELECT pc FROM ShoppingCartProductEntity pc where pc.cartId = :cartId AND pc.productId = :productId")})
+
+
 public class ShoppingCartProductEntity {
 
     @Id
