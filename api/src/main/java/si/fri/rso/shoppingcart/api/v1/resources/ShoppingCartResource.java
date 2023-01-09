@@ -1,5 +1,6 @@
 package si.fri.rso.shoppingcart.api.v1.resources;
 
+import com.kumuluz.ee.cors.annotations.CrossOrigin;
 import com.kumuluz.ee.logs.cdi.Log;
 import org.eclipse.microprofile.openapi.annotations.Operation;
 import org.eclipse.microprofile.openapi.annotations.enums.SchemaType;
@@ -30,6 +31,7 @@ import java.util.logging.Logger;
 @Path("/shopping-cart")
 @Produces(MediaType.APPLICATION_JSON)
 @Consumes(MediaType.APPLICATION_JSON)
+@CrossOrigin(supportedMethods = "GET, POST, HEAD, OPTIONS, PUT")
 public class ShoppingCartResource {
 
     private Logger log = Logger.getLogger(ShoppingCartResource.class.getName());
