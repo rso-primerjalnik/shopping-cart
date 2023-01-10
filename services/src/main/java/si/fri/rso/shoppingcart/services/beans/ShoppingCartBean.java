@@ -8,11 +8,15 @@ import javax.ws.rs.NotFoundException;
 import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.core.GenericType;
 import javax.ws.rs.core.Response;
+import java.time.temporal.ChronoUnit;
 import java.util.HashMap;
 import java.util.List;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
+import org.eclipse.microprofile.faulttolerance.CircuitBreaker;
+import org.eclipse.microprofile.faulttolerance.Fallback;
+import org.eclipse.microprofile.faulttolerance.Timeout;
 import org.eclipse.microprofile.metrics.annotation.Metered;
 import org.eclipse.microprofile.metrics.annotation.Timed;
 import si.fri.rso.shoppingcart.lib.Product;
@@ -206,6 +210,9 @@ public class ShoppingCartBean {
     }
 
     @Timed(name = "set_additional_data_for_cart_products_timer")
+    @Timeout(value = 2, unit = ChronoUnit.SECONDS)
+    @CircuitBreaker(requestVolumeThreshold = 2)
+    @Fallback(fallbackMethod = "setAdditionalDataForCartProductsFallback")
     public ShoppingCart setAdditionalDataForCartProducts(ShoppingCart shoppingCart) {
         String productCatalogBaseUrl = properties.getProductCatalogBaseUrl();
 
@@ -231,6 +238,10 @@ public class ShoppingCartBean {
         }
 
         return shoppingCart;
+    }
+
+    public ShoppingCart setAdditionalDataForCartProductsFallback(ShoppingCart shoppingCart) {
+        return null;
     }
 
     private void beginTx() {
