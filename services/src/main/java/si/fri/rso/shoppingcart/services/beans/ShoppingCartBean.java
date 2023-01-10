@@ -13,6 +13,7 @@ import java.util.List;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
+import org.eclipse.microprofile.metrics.annotation.Metered;
 import org.eclipse.microprofile.metrics.annotation.Timed;
 import si.fri.rso.shoppingcart.lib.Product;
 import si.fri.rso.shoppingcart.lib.ShoppingCart;
@@ -44,7 +45,6 @@ public class ShoppingCartBean {
         return resultList.stream().map(ShoppingCartConverter::toDto).collect(Collectors.toList());
     }
 
-    @Timed
     public ShoppingCart getShoppingCartById(Integer id) {
 
         ShoppingCartEntity shoppingCartEntity = em.find(ShoppingCartEntity.class, id);
@@ -101,6 +101,7 @@ public class ShoppingCartBean {
         return ShoppingCartConverter.toDto(updatedShoppingCartEntity);
     }
 
+    @Metered(name = "add_product_to_cart_metered")
     public ShoppingCart addProductToCart(Integer id, ShoppingCartProduct product) {
 
         // Check if shopping cart exists
@@ -204,6 +205,7 @@ public class ShoppingCartBean {
         return true;
     }
 
+    @Timed(name = "set_additional_data_for_cart_products_timer")
     public ShoppingCart setAdditionalDataForCartProducts(ShoppingCart shoppingCart) {
         String productCatalogBaseUrl = properties.getProductCatalogBaseUrl();
 
