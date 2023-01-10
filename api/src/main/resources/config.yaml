@@ -52,4 +52,4 @@ kumuluzee:
 rest-properties:
   maintenance-mode: false
   broken: false
-  product-catalog-base-url: http://catalog:8080
+  product-catalog-base-url: http://product-catalog-service:8080

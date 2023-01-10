@@ -234,6 +234,7 @@ public class ShoppingCartBean {
                 scProduct.setName(productData.getName());
                 scProduct.setDescription(productData.getDescription());
                 scProduct.setWeight(productData.getWeight());
+                scProduct.setFavourite(productData.getFavourite());
             }
         }
 

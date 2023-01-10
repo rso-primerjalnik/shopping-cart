@@ -6,6 +6,7 @@ public class Product {
     private String name;
     private String description;
     private String weight;
+    private Boolean favourite;
 
     public Integer getId() {
         return id;
@@ -38,5 +39,12 @@ public class Product {
     public void setWeight(String weight) {
         this.weight = weight;
     }
-    
+
+    public Boolean getFavourite() {
+        return favourite;
+    }
+
+    public void setFavourite(Boolean favourite) {
+        this.favourite = favourite;
+    }
 }
