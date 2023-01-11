@@ -26,8 +26,8 @@ kumuluzee:
   openapi-mp:
     ui:
       server-auto-config:
-        enabled: false
-        original-uri-check: true
+        enabled: true
+        original-uri-check: false
     servers: http://20.23.109.163/shopping-cart/
   logs:
     config-file: '<?xml version="1.0" encoding="UTF-8"?>
