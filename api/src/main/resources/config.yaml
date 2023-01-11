@@ -23,6 +23,11 @@ kumuluzee:
     web-instrumentation:
       - name: shopping-cart-endpoint
         url-pattern: /v1/shopping-cart/*
+  openapi-mp:
+    ui:
+      server-auto-config:
+        enabled: true
+        original-uri-check: true
   logs:
     config-file: '<?xml version="1.0" encoding="UTF-8"?>
                             <Configuration name="comments">
