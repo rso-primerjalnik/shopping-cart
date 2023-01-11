@@ -58,4 +58,4 @@ kumuluzee:
 rest-properties:
   maintenance-mode: false
   broken: false
-  product-catalog-base-url: http://product-catalog:8080
+  product-catalog-base-url: http://20.23.109.163/product-catalog
